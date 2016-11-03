@@ -143,7 +143,7 @@ export default class Evermark {
     const noteAttrs = new Evernote.NoteAttributes()
     noteAttrs.source = APP_NAME
     noteAttrs.sourceApplication = APP_NAME
-    noteAttrs.contentClass = APP_NAME // Make the note read-only
+    //noteAttrs.contentClass = APP_NAME // Make the note read-only
     note.attributes = noteAttrs
 
     const { absolutePath, relativePath } = await this.getNotePathInfo(notePath)
@@ -153,15 +153,17 @@ export default class Evermark {
     const tokens = this.md.parse(content, {})
 
     const noteInfo = Evermark.parseNoteInfo(tokens)
-    note.title = noteInfo.noteTitle
+    const liyangFileName=absolutePath.split("\/");
+    note.title = liyangFileName[5];
+    //note.title = noteInfo.noteTitle
 
     if (noteInfo.tagNames && noteInfo.tagNames.length) {
       note.tagNames = noteInfo.tagNames
     }
 
     if (noteInfo.notebookName) {
-      const createdNotebook = await this.createNotebookIfPossible(noteInfo.notebookName)
-      note.notebookGuid = createdNotebook.guid
+      const createdNotebook = await this.getNoteBookByName('WORK in LeTV')
+      note.notebookGuid = specificBook.guid
     }
 
     // The content of an Evernote note is represented using Evernote Markup Language
@@ -216,6 +218,15 @@ export default class Evermark {
   }
 
   async createNotebookIfPossible(name) {
+    const notebooks = await this.listNotebooks()
+    let notebook = notebooks.find(nb => nb.name === name)
+    if (!notebook) {
+      notebook = await this.createNotebook(name)
+    }
+    return notebook
+  }
+
+  async getNoteBookByName(name) {
     const notebooks = await this.listNotebooks()
     let notebook = notebooks.find(nb => nb.name === name)
     if (!notebook) {
