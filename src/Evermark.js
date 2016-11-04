@@ -162,6 +162,9 @@ export default class Evermark {
     }
 
     if (noteInfo.notebookName) {
+      const newBook= await this.createNotebookIfPossible(noteInfo.notebookName)
+      note.notebookGuid = newBook.guid
+    }else{
       const specificBook= await this.getNoteBookByName('WORK in LeTV')
       note.notebookGuid = specificBook.guid
     }

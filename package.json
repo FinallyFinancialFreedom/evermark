@@ -1,6 +1,6 @@
 {
   "name": "evermark-fork",
-  "version": "0.9.2",
+  "version": "0.9.3",
   "description": "A command line tool for syncing markdown files to Evernote 🐘",
   "license": "MIT",
   "repository": "acerphoenix/evermark",
